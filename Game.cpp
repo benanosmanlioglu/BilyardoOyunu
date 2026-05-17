@@ -1,5 +1,6 @@
 #include "Game.h"
-//#include "Balls.h"
+#include "Balls.h"
+#include "Table.h"
 
 //Private Fonksiyonlar
 void Game::initVariables()
@@ -9,9 +10,9 @@ void Game::initVariables()
 }
 void Game::initWindow()
 {
-    this->videoMode.height=500;
-    this->videoMode.width=1200;
-    this->Window = new sf::RenderWindow (this->videoMode, "Bilyardo Oyunu", sf::Style::Default);
+    this->videoMode.height=900;
+    this->videoMode.width=1800;
+    this->Window = new sf::RenderWindow (this->videoMode, "Bilyardo Oyunu",  sf::Style::Titlebar | sf::Style::Close);
     this->Window->setFramerateLimit(60);
 }
 void Game::pollEvents()
@@ -35,8 +36,10 @@ while (this->Window->pollEvent(this->event))
   }
 
 }
-
-
+void Game::initTable()
+{
+    this->table = new Table();
+}
 
 
 //Yapıcı && Yıkıcı
@@ -44,14 +47,13 @@ Game::Game()
 {
     this->initVariables();
     this->initWindow();
-    
-
-    
+    this->initTable();
 
 }
 Game::~Game()
 {
    delete this-> Window;
+   delete this-> table;
 }
 
 
@@ -72,7 +74,8 @@ void Game::render()
 {
     this->Window->clear();
 
-    //Draw objects
+    //çizim işlemleri
+    this->table->render(*this->Window);
 
     this->Window->display();
 }

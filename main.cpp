@@ -1,6 +1,5 @@
 #include <iostream>
 #include "Game.h"
-#include "Game.h"
 
 
 
@@ -12,6 +11,8 @@ int main()
 {   
      //oyun motorum
     Game game;
+
+   
 
     while (game.running())
      {

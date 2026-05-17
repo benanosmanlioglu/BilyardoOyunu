@@ -1,9 +1,7 @@
 #ifndef GAME_H
 #define GAME_H
 
-#include <iostream>
-#include <vector>
-#include <SFML/Graphics.hpp>
+#include "Table.h"
 
 using namespace sf;
 /*
@@ -21,12 +19,13 @@ class Game
     Event event;
 
     //Oyun Objeleri
-    std::vector<CircleShape> balls;
+    Table *table;
 
     //FOnksiyonlar
     void initVariables();
     void initWindow();
     void pollEvents();
+    void initTable();
     
 
     public:
