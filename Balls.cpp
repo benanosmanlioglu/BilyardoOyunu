@@ -1,25 +1,64 @@
 #include "Balls.h"
 
 using namespace std;
+
 //Private Fonksiyonlar
-void Balls::initBalls(float x, float y, sf::Color color, int ballnumber)
+void Balls::initBalls(float x, float y, int ballnumber)
 {
     this->ballnumber = ballnumber;
-    this->shape.setRadius(15.f); // Top yarıçapı
-    this->shape.setFillColor(color);
+    float radius = 25.f;
+    this->shape.setRadius(radius);
+    this->shape.setPointCount(100); 
     this->shape.setPosition(x, y);
-    this->shape.setOrigin(15.f, 15.f);
+    this->shape.setOrigin(radius, radius);
+    
 }
+void Balls::initTextures()
+{
+   string path = "bil_top/" + to_string(ballnumber) + ".png";
+    this->texture.loadFromFile(path);
+        
+    
+}   
+void Balls::initSprite()
+{
+   this->sprite.setTexture(this->texture);
+
+    sf::FloatRect bounds = this->sprite.getLocalBounds();
+
+    
+    float targetSize = 50.f; 
+
+     
+    float scaleX = targetSize / bounds.width;
+    float scaleY = targetSize / bounds.height;
+
+    this->sprite.setScale(scaleX, scaleY);
+
+    
+    this->sprite.setOrigin(bounds.width / 2.f, bounds.height / 2.f);
+
+   
+
+}
+
+
+
+
+
 void Balls::initvariable(){
    this->velocity = Vector2f(0.f, 0.f);
    this->friction = 0.98f;
 }
 
 //Yapıcı && Yıkıcı
-Balls::Balls(float x, float y, sf::Color color, int ballnumber)
+Balls::Balls(float x, float y,  int ballnumber)
 {
-   this->initBalls(  x,  y,  color,  ballnumber);
+   this->initBalls(  x,  y, ballnumber);
    this->initvariable();
+   this->initTextures();
+   this->initSprite();
+   
 }
 Balls::~Balls()
 {
@@ -33,6 +72,7 @@ Balls::~Balls()
   void Balls::updateMovement()
    {  //Top Hzlandırma && Yavaşlatma
        this->shape.move(this->velocity);
+       
    }   
   void Balls::updateFriction()
    {
@@ -79,11 +119,16 @@ Balls::~Balls()
 
  void Balls::updateBalls()
  {
-    this->updateMovement();   
+    this->updateMovement();    
     this->updateFriction();  
     this->updateCollision();
+
+    this->sprite.setPosition(this->shape.getPosition());
  }
  void Balls::renderBalls(RenderWindow &target)
  {
+    target.draw(this->sprite);
+    
 
+    
  }

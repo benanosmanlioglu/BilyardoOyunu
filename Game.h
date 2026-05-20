@@ -1,6 +1,6 @@
 #ifndef GAME_H
 #define GAME_H
-
+#include "Balls.h"
 #include "Table.h"
 
 using namespace sf;
@@ -20,12 +20,14 @@ class Game
 
     //Oyun Objeleri
     Table *table;
+    vector<Balls*> balls;
 
     //FOnksiyonlar
     void initVariables();
     void initWindow();
     void pollEvents();
     void initTable();
+    void initAllBalls();
     
 
     public:

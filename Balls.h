@@ -5,6 +5,9 @@
 #include <SFML/Graphics.hpp>
 #include <cmath>
 
+/*
+Toplar ve Fiziki işlemler bu sınıfta
+*/
 using namespace std;
 using namespace sf;
 class Balls
@@ -15,16 +18,24 @@ class Balls
     Vector2f velocity;
     float friction;
     int ballnumber;
+
+    Texture texture;
+    Sprite sprite;
+    
+
     //Fonksiyonlar
-    void initBalls(float x, float y, sf::Color color, int ballnumber);
+    void initBalls(float x, float y,  int ballnumber);
     void initvariable();
+    void initTextures();
+    void initSprite();
     void updateMovement();   
     void updateFriction();  
     void updateCollision();
 
+
     public:
     //Yapıcı && Yıkıcı
-        Balls(float x, float y, sf::Color color, int ballnumber);
+        Balls(float x, float y, int ballnumber);
         virtual ~Balls();
 
     //Fobksiyonlar
