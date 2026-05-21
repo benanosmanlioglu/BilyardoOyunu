@@ -2,6 +2,7 @@
 #define GAME_H
 #include "Balls.h"
 #include "Table.h"
+#include "Cue.h"
 
 using namespace sf;
 /*
@@ -21,6 +22,7 @@ class Game
     //Oyun Objeleri
     Table *table;
     vector<Balls*> balls;
+    Cue *cue;
 
     //FOnksiyonlar
     void initVariables();
@@ -28,6 +30,8 @@ class Game
     void pollEvents();
     void initTable();
     void initAllBalls();
+    void initCue();
+    void updateCue();
     
 
     public:

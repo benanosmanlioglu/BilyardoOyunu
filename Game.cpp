@@ -1,6 +1,6 @@
 #include "Game.h"
-#include "Balls.h"
-#include "Table.h"
+
+
 
 //Private Fonksiyonlar
 void Game::initVariables()
@@ -87,6 +87,25 @@ void Game::initTable()
  }
 
 }
+
+void Game::initCue()
+{
+    this-> cue = new Cue();
+}
+
+void Game::updateCue()
+{
+    if (this->cue != nullptr)
+    {
+        Vector2i mousePosInt = Mouse::getPosition(*this->Window);
+        Vector2f mousePos = this->Window->mapPixelToCoords(mousePosInt);
+
+        Vector2f whiteBallPos = this->balls[0]->getShape().getPosition();
+
+        this->cue->update(whiteBallPos, mousePos);
+    }
+
+}
 //Yapıcı && Yıkıcı
 Game::Game()
 {
@@ -94,16 +113,20 @@ Game::Game()
     this->initWindow();
     this->initTable();
     this->initAllBalls();
+    this->initCue();
 }
 Game::~Game()
 {
    delete this-> Window;
    delete this-> table;
 
-   for (auto* ball : this->balls)
+   for (auto* ball : this-> balls)
     {
         delete ball; 
     }
+    
+    this->balls.clear();
+    delete this-> cue;
 }   
 
 
@@ -122,6 +145,8 @@ void Game::update()
 {
     ball->updateBalls(); 
 }
+
+   this->updateCue();
   
 }
 
@@ -138,6 +163,7 @@ void Game::render()
     ball->renderBalls(*this->Window);
    }
     
+    this->cue->render(*this->Window);
     this->Window->display();
 
  
