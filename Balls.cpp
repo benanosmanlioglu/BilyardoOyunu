@@ -48,7 +48,13 @@ void Balls::initSprite()
 
 void Balls::initvariable(){
    this->velocity = Vector2f(0.f, 0.f);
-   this->friction = 0.98f;
+   this->friction = 0.99f;
+}
+
+void Balls::setVelocity(Vector2f newVelocity)
+{
+   this->velocity = newVelocity;
+   
 }
 
 //Yapıcı && Yıkıcı
@@ -87,7 +93,7 @@ Balls::~Balls()
    { 
        Vector2f pos = this->shape.getPosition();
       float ballradius = this->shape.getRadius();
-      float offset = 40.f;
+      float offset = 80.f;
 
       if (pos.x - ballradius < 150.f + offset) 
       { // Hız Sağa Doğru
@@ -98,7 +104,7 @@ Balls::~Balls()
     else if (pos.x + ballradius > 1650.f - offset) 
     {   //HIz Sola Doğru
         this->velocity.x = -std::fabs(this->velocity.x); 
-        this->shape.setPosition(1610.f - ballradius, pos.y);
+        this->shape.setPosition(1570.f - ballradius, pos.y);
     }
 
     
@@ -111,10 +117,19 @@ Balls::~Balls()
     else if (pos.y + ballradius > 870.f - offset) 
     {   //HIz Yukarı Doğru
         this->velocity.y = -std::fabs(this->velocity.y); 
-        this->shape.setPosition(pos.x, 830.f - ballradius);
+        this->shape.setPosition(pos.x, 790.f - ballradius);
     }
   }
-    
+   
+  
+  const CircleShape & Balls::getShape() const
+   { 
+    return this->shape; 
+   }
+   const Vector2f Balls::getVelocity() const 
+   {
+     return this->velocity; 
+   }
   
 
  void Balls::updateBalls()

@@ -10,9 +10,13 @@ class Cue
 {
     private:
     //Değişkenler
-
     Texture texture;
     Sprite sprite;
+    
+    float power = 0.f;        
+    float maxPower = 450.f;   
+    bool isAiming = false;
+    float impactForce=0.f;
     
 
     //Fonksiyonlar
@@ -21,12 +25,22 @@ class Cue
     void initSprite();
     void updatePosition(Vector2f whiteBallPos);
     void updateRotation(Vector2f whiteBallPos,Vector2f  mousePos);
+   
     public:
     //Yapıcı && Yıkıcı
     Cue();
     ~Cue();
 
     //Fonksiyonlar
+    void startAiming(); 
+    void stopAiming(); 
+    void resetPower(); 
+
+    const float getPower() const ;
+    const bool getAiming() const ;
+    float getRotation() const ;
+    const float getimpectPower() const;
+     void updatePositionForward();
      
 
     void update(Vector2f whiteBallPos, Vector2f mousePos);

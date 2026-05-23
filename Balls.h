@@ -5,6 +5,7 @@
 #include <SFML/Graphics.hpp>
 #include <cmath>
 
+
 /*
 Toplar ve Fiziki işlemler bu sınıfta
 */
@@ -31,6 +32,7 @@ class Balls
     void updateMovement();   
     void updateFriction();  
     void updateCollision();
+    
 
 
     public:
@@ -39,6 +41,10 @@ class Balls
         virtual ~Balls();
 
     //Fobksiyonlar
+    const CircleShape& getShape() const ;
+    const Vector2f getVelocity() const ;
+    void setVelocity(Vector2f newVelocity);
+
     void updateBalls();
     void renderBalls(RenderWindow &target);
 

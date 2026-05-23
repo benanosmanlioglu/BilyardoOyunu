@@ -29,11 +29,32 @@ while (this->Window->pollEvent(this->event))
         if (this->event.key.code == Keyboard::Escape)
             this->Window->close();
         break;
-           
+    case Event::MouseButtonPressed:
+        if(this->event.mouseButton.button == Mouse::Left)
+        {
+            if (this->allBallsStopped()) 
+                {
+                    this->cue->startAiming();
+                }
+        }     
+        break;
+    case Event::MouseButtonReleased:
+         if(this->event.mouseButton.button == Mouse::Left)
+         {
+            if (this->cue->getAiming()) 
+                {
+                    
+                    this->cue->stopAiming();
+                    
+                }
+         }
+         break;
+
     default:
         break;
     }
   }
+
 
 }
 void Game::initTable()
@@ -92,6 +113,19 @@ void Game::initCue()
 {
     this-> cue = new Cue();
 }
+bool Game::allBallsStopped()
+{
+    for (auto* ball : this->balls) 
+    {
+        // Hız vektörü sıfır değilse bir şeyler hala hareket ediyordur
+        if (ball->getVelocity() != sf::Vector2f(0.f, 0.f)) 
+        {
+            return false;
+        }
+    }
+
+    return true;
+}
 
 void Game::updateCue()
 {
@@ -104,7 +138,37 @@ void Game::updateCue()
 
         this->cue->update(whiteBallPos, mousePos);
     }
+    
 
+}
+
+void Game::updateCueHit()
+{
+  if (!this->cue->getAiming() )
+    {
+        // Istaka topa tam değmek üzereyken (power 20'den küçükse vuruşu yap)
+        if (this->cue->getPower() <= 15.f) 
+        {
+            this->hitWhiteBall();
+            this->cue->resetPower(); 
+        }
+    }
+}
+
+void Game::hitWhiteBall()
+{
+   float angleRad = (this->cue->getRotation() + 245.f) * 3.14159265f / 180.f;
+
+   float powerScale = 0.10f; 
+   float finalPower = this->cue->getimpectPower() * powerScale;
+
+    Vector2f newVelocity;
+    newVelocity.x = std::cos(angleRad) * finalPower;
+    newVelocity.y = std::sin(angleRad) * finalPower;
+
+    if (!this->balls.empty()) {
+        this->balls[0]->setVelocity(newVelocity);
+    }
 }
 //Yapıcı && Yıkıcı
 Game::Game()
@@ -138,15 +202,31 @@ const bool Game::running() const
 
 //Fonksiyonlar
 void Game::update()
-{
+{ int a=0;
   this->pollEvents();
  //Topları güncelliyor
   for (auto* ball : this->balls)
 {
     ball->updateBalls(); 
 }
+ if(allBallsStopped())
+ {  this->updateCue();
 
-   this->updateCue();
+    if(this->cue->getPower() > 15.f && !(this->cue->getAiming()))
+    {
+      this->cue->updatePositionForward();
+      a++;
+    }
+    if(a==1)
+    {
+       this->updateCueHit();
+    }
+
+    
+ }
+
+ 
+   
   
 }
 
@@ -162,8 +242,12 @@ void Game::render()
    {
     ball->renderBalls(*this->Window);
    }
+
+    if(allBallsStopped())
+    {
+     this->cue->render(*this->Window);
+    }
     
-    this->cue->render(*this->Window);
     this->Window->display();
 
  

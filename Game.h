@@ -32,6 +32,9 @@ class Game
     void initAllBalls();
     void initCue();
     void updateCue();
+    void updateCueHit();
+    bool allBallsStopped();
+    void hitWhiteBall();
     
 
     public:
