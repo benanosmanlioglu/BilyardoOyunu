@@ -42,7 +42,56 @@ void Balls::initSprite()
 
 }
 
+float Balls::getDistance(Balls* other)
+{
+    Vector2f diff = this->shape.getPosition() - other->shape.getPosition();
+    return sqrt(diff.x * diff.x + diff.y * diff.y);
+}
 
+void Balls::separateBalls(Balls* other, float overlap)
+{
+    Vector2f relativePos = other->shape.getPosition() - this->shape.getPosition();
+    float distance = sqrt(relativePos.x * relativePos.x + relativePos.y * relativePos.y);
+    
+    sf::Vector2f collisionNormal = relativePos / distance;
+    
+    
+    this->shape.move(collisionNormal * -overlap * 0.5f);
+    other->shape.move(collisionNormal * overlap * 0.5f);
+}
+
+void Balls::applyCollisionPhysics(Balls* other) {
+    sf::Vector2f relativePos = other->shape.getPosition() - this->shape.getPosition();
+    float distance = std::sqrt(relativePos.x * relativePos.x + relativePos.y * relativePos.y);
+    sf::Vector2f n = relativePos / distance; // Normal Vektör
+
+    
+    sf::Vector2f relVel = this->velocity - other->velocity;
+
+    
+    float vDotN = relVel.x * n.x + relVel.y * n.y;
+
+    
+    if (vDotN <= 0) return;
+
+    
+    sf::Vector2f impulse = n * vDotN;
+
+    this->velocity -= impulse;
+    other->velocity += impulse;
+}
+
+void Balls::checkAndResolveCollision(Balls* other) {
+    float distance = this->getDistance(other);
+    float minDistance = this->shape.getRadius() + other->shape.getRadius();
+
+    if (distance < minDistance) {
+        // 1. Önce birbirlerinden ayır
+        this->separateBalls(other, minDistance - distance);
+        // 2. Sonra fizik yasalarını uygula
+        this->applyCollisionPhysics(other);
+    }
+}
 
 
 
@@ -93,7 +142,7 @@ Balls::~Balls()
    { 
        Vector2f pos = this->shape.getPosition();
       float ballradius = this->shape.getRadius();
-      float offset = 80.f;
+      float offset = 82.f;
 
       if (pos.x - ballradius < 150.f + offset) 
       { // Hız Sağa Doğru
@@ -104,7 +153,7 @@ Balls::~Balls()
     else if (pos.x + ballradius > 1650.f - offset) 
     {   //HIz Sola Doğru
         this->velocity.x = -std::fabs(this->velocity.x); 
-        this->shape.setPosition(1570.f - ballradius, pos.y);
+        this->shape.setPosition(1569.f - ballradius, pos.y);
     }
 
     
@@ -137,7 +186,7 @@ Balls::~Balls()
     this->updateMovement();    
     this->updateFriction();  
     this->updateCollision();
-
+   
     this->sprite.setPosition(this->shape.getPosition());
  }
  void Balls::renderBalls(RenderWindow &target)

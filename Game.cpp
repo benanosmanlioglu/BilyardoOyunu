@@ -170,6 +170,24 @@ void Game::hitWhiteBall()
         this->balls[0]->setVelocity(newVelocity);
     }
 }
+
+void Game::updateBalls()
+{  
+     for (auto* ball : this->balls)
+  {
+    ball->updateBalls(); 
+  }
+
+  for (int i = 0; i < this->balls.size(); i++)
+    {
+        for (int j = i + 1; j < this->balls.size(); j++)
+        {
+            // i. top ile j. top çarpışıyor mu?
+            this->balls[i]->checkAndResolveCollision(this->balls[j]);
+        }
+    }
+
+}
 //Yapıcı && Yıkıcı
 Game::Game()
 {
@@ -205,10 +223,10 @@ void Game::update()
 { int a=0;
   this->pollEvents();
  //Topları güncelliyor
-  for (auto* ball : this->balls)
-{
-    ball->updateBalls(); 
-}
+ 
+ this->updateBalls();
+
+// ıstaka güncelleniyor
  if(allBallsStopped())
  {  this->updateCue();
 
@@ -225,8 +243,7 @@ void Game::update()
     
  }
 
- 
-   
+
   
 }
 

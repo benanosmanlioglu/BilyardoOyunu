@@ -32,6 +32,10 @@ class Balls
     void updateMovement();   
     void updateFriction();  
     void updateCollision();
+    float getDistance(Balls* other);
+    void separateBalls(Balls* other, float overlap);
+    void applyCollisionPhysics(Balls* other);
+    
     
 
 
@@ -44,7 +48,7 @@ class Balls
     const CircleShape& getShape() const ;
     const Vector2f getVelocity() const ;
     void setVelocity(Vector2f newVelocity);
-
+    void checkAndResolveCollision(Balls* other);
     void updateBalls();
     void renderBalls(RenderWindow &target);
 
