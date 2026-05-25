@@ -19,6 +19,7 @@ class Balls
     Vector2f velocity;
     float friction;
     int ballnumber;
+    bool isPotted;
 
     Texture texture;
     Sprite sprite;
@@ -31,10 +32,12 @@ class Balls
     void initSprite();
     void updateMovement();   
     void updateFriction();  
-    void updateCollision();
+   
     float getDistance(Balls* other);
     void separateBalls(Balls* other, float overlap);
     void applyCollisionPhysics(Balls* other);
+    bool isNearHole(const vector<Vector2f>& holePositions, float holeRadius);
+    
     
     
 
@@ -48,10 +51,14 @@ class Balls
     const CircleShape& getShape() const ;
     const Vector2f getVelocity() const ;
     void setVelocity(Vector2f newVelocity);
+    void setPosition(Vector2f newPosition);
     void checkAndResolveCollision(Balls* other);
-    void updateBalls();
+    void updateBalls(const std::vector<sf::Vector2f>& holePositions, float holeRadius);
     void renderBalls(RenderWindow &target);
-
+    bool checkIfPotted(Vector2f holePos, float holeRadius);
+    void updateCollision(const vector<Vector2f>& holePositions, float holeRadius);
+    bool getIsPotted() const;
+   
 };
 
 

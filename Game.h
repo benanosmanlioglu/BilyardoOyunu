@@ -13,7 +13,8 @@ class Game
 {   
     private:
     //Değişkenler
-
+     float holeRadius;
+     vector<Vector2f> holePositions;
     //Window
     RenderWindow *Window;
     VideoMode videoMode;
@@ -36,6 +37,14 @@ class Game
     bool allBallsStopped();
     void hitWhiteBall();
     void updateBalls();
+    void updateBallshape();
+    void updateBallColl();
+    void updateCollision();
+    // Boşluk Fonksiyonları
+    void initHoles();
+    void updateHoles();
+    void removeBall(int i);
+    void resetWhiteBall();
     
 
     public:

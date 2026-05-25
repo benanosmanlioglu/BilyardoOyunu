@@ -61,12 +61,15 @@ void Balls::separateBalls(Balls* other, float overlap)
 }
 
 void Balls::applyCollisionPhysics(Balls* other) {
-    sf::Vector2f relativePos = other->shape.getPosition() - this->shape.getPosition();
-    float distance = std::sqrt(relativePos.x * relativePos.x + relativePos.y * relativePos.y);
-    sf::Vector2f n = relativePos / distance; // Normal Vektör
+
+    Vector2f relativePos = other->shape.getPosition() - this->shape.getPosition();
+
+    float distance = sqrt(relativePos.x * relativePos.x + relativePos.y * relativePos.y);
+
+    Vector2f n = relativePos / distance; 
 
     
-    sf::Vector2f relVel = this->velocity - other->velocity;
+    Vector2f relVel = this->velocity - other->velocity;
 
     
     float vDotN = relVel.x * n.x + relVel.y * n.y;
@@ -75,35 +78,44 @@ void Balls::applyCollisionPhysics(Balls* other) {
     if (vDotN <= 0) return;
 
     
-    sf::Vector2f impulse = n * vDotN;
+    Vector2f impulse = n * vDotN;
 
     this->velocity -= impulse;
     other->velocity += impulse;
 }
 
-void Balls::checkAndResolveCollision(Balls* other) {
+void Balls::checkAndResolveCollision(Balls* other) 
+{
     float distance = this->getDistance(other);
     float minDistance = this->shape.getRadius() + other->shape.getRadius();
 
-    if (distance < minDistance) {
-        // 1. Önce birbirlerinden ayır
+    if (distance < minDistance) 
+    {
+        
         this->separateBalls(other, minDistance - distance);
-        // 2. Sonra fizik yasalarını uygula
+        
         this->applyCollisionPhysics(other);
     }
 }
 
 
 
-void Balls::initvariable(){
+void Balls::initvariable()
+{
    this->velocity = Vector2f(0.f, 0.f);
    this->friction = 0.99f;
+   
 }
 
 void Balls::setVelocity(Vector2f newVelocity)
 {
    this->velocity = newVelocity;
    
+}
+
+void Balls::setPosition(Vector2f newPosition)
+{
+    this->shape.setPosition(newPosition);
 }
 
 //Yapıcı && Yıkıcı
@@ -138,11 +150,17 @@ Balls::~Balls()
         this->velocity = sf::Vector2f(0.f, 0.f);
     }
    }
-  void Balls::updateCollision()
-   { 
+  void Balls::updateCollision(const vector<Vector2f>& holePositions, float holeRadius)
+   {   
+       if(this->isNearHole( holePositions,  holeRadius))
+       {
+           return;
+       }
+
+
        Vector2f pos = this->shape.getPosition();
       float ballradius = this->shape.getRadius();
-      float offset = 82.f;
+      float offset = 80.f;
 
       if (pos.x - ballradius < 150.f + offset) 
       { // Hız Sağa Doğru
@@ -153,7 +171,7 @@ Balls::~Balls()
     else if (pos.x + ballradius > 1650.f - offset) 
     {   //HIz Sola Doğru
         this->velocity.x = -std::fabs(this->velocity.x); 
-        this->shape.setPosition(1569.f - ballradius, pos.y);
+        this->shape.setPosition(1570.f - ballradius, pos.y);
     }
 
     
@@ -181,11 +199,11 @@ Balls::~Balls()
    }
   
 
- void Balls::updateBalls()
+ void Balls::updateBalls(const vector<Vector2f>& holePositions, float holeRadius)
  {
     this->updateMovement();    
     this->updateFriction();  
-    this->updateCollision();
+    this->updateCollision( holePositions,  holeRadius);
    
     this->sprite.setPosition(this->shape.getPosition());
  }
@@ -194,5 +212,43 @@ Balls::~Balls()
     target.draw(this->sprite);
     
 
-    
  }
+
+ //****************************************************************************************** 
+
+ bool Balls::isNearHole(const vector<Vector2f>& holePositions, float holeRadius)
+ {  
+    for (const auto& hole : holePositions)
+    {
+        sf::Vector2f diff = this->shape.getPosition() - hole;
+        float distSq = diff.x * diff.x + diff.y * diff.y;
+
+        
+        
+        if (distSq < (holeRadius * holeRadius * 2.0f)) 
+        {
+            return true;
+        }
+    }
+    return false;
+
+ }
+ bool Balls::checkIfPotted(Vector2f holePos, float holeRadius)
+{
+    Vector2f diff = this->shape.getPosition() - holePos;
+
+    float distanceSquare = (diff.x * diff.x) + (diff.y * diff.y);
+
+    if (distanceSquare < (holeRadius * holeRadius))
+    {
+        return true;
+    }
+
+    return false;
+}
+bool Balls::getIsPotted() const 
+{
+    return this->isPotted;
+}
+
+
