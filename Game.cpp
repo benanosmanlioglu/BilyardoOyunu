@@ -5,7 +5,11 @@
 //Private Fonksiyonlar
 void Game::initVariables()
 {
-    this->Window=nullptr;
+    this->Window = nullptr;
+    this->score = 0;
+    this->endgame = false;
+    this->wongame = false;
+    
 
 }
 void Game::initWindow()
@@ -17,7 +21,10 @@ void Game::initWindow()
 }
 void Game::pollEvents()
 { 
-while (this->Window->pollEvent(this->event))
+    Vector2i mousePosInt;
+    Vector2f mousePos;
+
+ while (this->Window->pollEvent(this->event))
   {
     switch (this->event.type)
     {
@@ -30,6 +37,15 @@ while (this->Window->pollEvent(this->event))
             this->Window->close();
         break;
     case Event::MouseButtonPressed:
+        mousePosInt = Mouse::getPosition(*this->Window);
+        mousePos = this->Window->mapPixelToCoords(mousePosInt);
+
+        
+        if (this->restartButton.getGlobalBounds().contains(mousePos))
+        {
+          this->resetGame();  
+        }
+
         if(this->event.mouseButton.button == Mouse::Left)
         {
             if (this->allBallsStopped()) 
@@ -39,6 +55,7 @@ while (this->Window->pollEvent(this->event))
         }     
         break;
     case Event::MouseButtonReleased:
+
          if(this->event.mouseButton.button == Mouse::Left)
          {
             if (this->cue->getAiming()) 
@@ -49,7 +66,10 @@ while (this->Window->pollEvent(this->event))
                 }
          }
          break;
-
+    
+        
+    
+            
     default:
         break;
     }
@@ -57,11 +77,26 @@ while (this->Window->pollEvent(this->event))
 
 
 }
+void Game::resetGame()
+{ 
+    this->score = 0;
+    
+    this->endgame = false;
+
+    for (auto* ball : this->balls) {
+        delete ball;
+    }
+    this->balls.clear();
+
+    this->initAllBalls();
+    
+    this->balls[0]->setVelocity(sf::Vector2f(0.f, 0.f));
+}
 void Game::initTable()
 {
     this->table = new Table();
 }
- void Game::initAllBalls()
+void Game::initAllBalls()
  { //Beyaz Top
     this->balls.push_back(new Balls(450.f, 495.f, 0));
    
@@ -111,6 +146,50 @@ void Game::initCue()
 {
     this-> cue = new Cue();
 }
+void Game::initFont()
+{
+   this->font.loadFromFile("Fonts/arial.ttf");
+
+}
+void Game::initText()
+{    //Skor
+    this->scoreText.setFont(this->font);
+    this->scoreText.setCharacterSize(24);
+    this->scoreText.setFillColor(sf::Color::White);
+    this->scoreText.setPosition(20.f, 20.f);
+
+    // Oyun Bitti!
+    this->gameOverText.setFont(this->font);
+    this->gameOverText.setCharacterSize(80);
+    this->gameOverText.setFillColor(sf::Color::Red);
+    this->gameOverText.setString("GAME OVER!");
+    this->gameOverText.setPosition(
+        this->videoMode.width / 2.f - 200.f, 
+        this->videoMode.height / 2.f - 50.f);
+
+    //Oyunu Tekrarla
+    this->restartButton.setSize(Vector2f(200.f, 60.f)); 
+    this->restartButton.setFillColor(Color(100, 100, 100, 150)); 
+    this->restartButton.setPosition(1620.f, 20.f);
+    
+    this->buttonText.setFont(this->font);
+    this->buttonText.setString("RESTART");
+    this->buttonText.setCharacterSize(25);
+    this->buttonText.setFillColor(sf::Color::White);
+
+    this->buttonText.setPosition(1645.f, 32.f); 
+
+    //Kazandın
+    this->winText.setFont(this->font);
+    this->winText.setCharacterSize(80);
+    this->winText.setFillColor(Color::Green); 
+    this->winText.setString("YOU WIN!\nAll Balls Potted!");
+
+    this->winText.setPosition(
+        this->videoMode.width / 2.f - 250.f, 
+        this->videoMode.height / 2.f - 50.f
+    );
+}
 bool Game::allBallsStopped()
 {
     for (auto* ball : this->balls) 
@@ -124,7 +203,17 @@ bool Game::allBallsStopped()
 
     return true;
 }
-
+bool Game::isWin()
+{
+    if (endgame==false && wongame==false)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
 void Game::updateCue()
 {
     if (this->cue != nullptr)
@@ -199,14 +288,40 @@ void Game::updateHoles()
         {
             if (this->balls[i]->checkIfPotted(hole, this->holeRadius)) 
             {
-                
-                if (i == 0) 
+                if (this->balls[i]->getBallNumber() == 8)
                 {
+                    if (this->balls.size() > 2)
+                    {
+                      this->gameOverText.setString("GAME OVER!\nEarly 8-Ball!");
+                      this->endgame = true; 
+
+                    }
+                    else
+                    {
+                       this->wongame = true; 
+                    }
+
+                    this->removeBall(i);
+                } 
+                else if (i == 0) 
+                {   
+                    this->score -= 7;
                     this->resetWhiteBall(); 
+
+                    if(this->score < 0)
+                    {
+                         this->endgame = true;
+                    }
                 } 
                 else 
-                {
+                {   
+                    this->score += 10;
                     this->removeBall(i);    
+
+                    if (this->balls.size() == 1) 
+                     {
+                       this->endgame = true; 
+                     }
                 }
                 
                 potted = true; 
@@ -241,6 +356,8 @@ Game::Game()
     this->initHoles();
     this->initAllBalls();
     this->initCue();
+    this->initFont();
+    this->initText();
 }
 Game::~Game()
 {
@@ -265,30 +382,37 @@ const bool Game::running() const
 
 //Fonksiyonlar
 void Game::update()
-{ int a=0;
+{ 
+    int a=0;
 
-  this->pollEvents();
- //Topları güncelliyor
+     this->pollEvents();
+
+  if(this->isWin())
+  {
+    
+     //Topları güncelliyor
  
- this->updateBalls();
+     this->updateBalls();
+     this->scoreText.setString("Score: " + to_string(this->score));
+    // ıstaka güncelleniyor
+    if(allBallsStopped())
+    {  this->updateCue();
 
-// ıstaka güncelleniyor
- if(allBallsStopped())
- {  this->updateCue();
-
-    if(this->cue->getPower() > 15.f && !(this->cue->getAiming()))
-    {
-      this->cue->updatePositionForward();
-      a++;
-    }
-    if(a==1)
-    {
-       this->updateCueHit();
-    }
+       if(this->cue->getPower() > 15.f && !(this->cue->getAiming()))
+       {
+         this->cue->updatePositionForward();
+         a++;
+       }
+       if(a==1)
+       {
+         this->updateCueHit();
+       }
 
     
- }
+    }
 
+  }
+  
 
   
 }
@@ -309,6 +433,24 @@ void Game::render()
     if(allBallsStopped())
     {
      this->cue->render(*this->Window);
+    }
+    //Skore
+    this->Window->draw(this->scoreText);
+    //Tekrar
+    this->Window->draw(this->restartButton);
+    this->Window->draw(this->buttonText);
+    this->Window->draw(this->scoreText);
+    //Bitirme
+    if (this->endgame)
+    {  
+    
+       this->Window->draw(this->gameOverText);   
+        
+    }
+
+    if(this->wongame)
+    {
+        this->Window->draw(this->winText); 
     }
     
     this->Window->display();

@@ -7,6 +7,8 @@
 using namespace sf;
 /*
 OYUNunu TEMEL İŞLEVLERİ bu sınıfta
+Puanlama
+
 */
 
 class Game
@@ -15,6 +17,16 @@ class Game
     //Değişkenler
      float holeRadius;
      vector<Vector2f> holePositions;
+     Font font; 
+     Text scoreText;
+     Text gameOverText;
+     int score;
+     bool endgame;
+     bool wongame;
+     RectangleShape restartButton;
+     Text buttonText;
+     Text winText;
+    
     //Window
     RenderWindow *Window;
     VideoMode videoMode;
@@ -29,6 +41,7 @@ class Game
     void initVariables();
     void initWindow();
     void pollEvents();
+    void resetGame();
     void initTable();
     void initAllBalls();
     void initCue();
@@ -40,6 +53,9 @@ class Game
     void updateBallshape();
     void updateBallColl();
     void updateCollision();
+    void initFont();
+    void initText();
+    bool isWin();
     // Boşluk Fonksiyonları
     void initHoles();
     void updateHoles();
