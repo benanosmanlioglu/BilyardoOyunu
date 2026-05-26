@@ -5,7 +5,9 @@
 #include <SFML/System.hpp>
 #include <iostream>
 
-
+/*
+Masanın çizimi ve buyutları bu sınıfta
+*/
 
 using namespace sf;
 

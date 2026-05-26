@@ -8,6 +8,11 @@
 
 /*
 Toplar ve Fiziki işlemler bu sınıfta
+-Sürtünme Fiziği
+-Çember-Çember Çarpışma
+-Kenar Çarpışması
+-Topların Tanımlanması
+
 */
 using namespace std;
 using namespace sf;
@@ -47,17 +52,24 @@ class Balls
         Balls(float x, float y, int ballnumber);
         virtual ~Balls();
 
-    //Fobksiyonlar
+    //Accessors (erişim)    
     const CircleShape& getShape() const ;
     const Vector2f getVelocity() const ;
+    bool getIsPotted() const;
+    int getBallNumber() const;
+
+    //Setters 
     void setVelocity(Vector2f newVelocity);
     void setPosition(Vector2f newPosition);
+    //Fobksiyonlar
+    
+   
     void checkAndResolveCollision(Balls* other);
     void updateBalls(const std::vector<sf::Vector2f>& holePositions, float holeRadius);
     void renderBalls(RenderWindow &target);
     bool checkIfPotted(Vector2f holePos, float holeRadius);
     void updateCollision(const vector<Vector2f>& holePositions, float holeRadius);
-    bool getIsPotted() const;
+    
    
 };
 

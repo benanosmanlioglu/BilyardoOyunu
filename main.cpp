@@ -9,7 +9,7 @@
 
 int main() 
 {   
-     //oyun motorum
+     //oyun motoru
     Game game;
 
    

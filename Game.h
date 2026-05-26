@@ -7,13 +7,18 @@
 using namespace sf;
 /*
 OYUNunu TEMEL İŞLEVLERİ bu sınıfta
-Puanlama
+-Delik Algılama Sistemi
+-Puanlama
+-oyun kurallarına bağlı olarak kazanma dorumu göstergesi
+-Güç barı
+-Boşluğa giren top sayacı
 
 */
 
 class Game
 {   
     private:
+
     //Değişkenler
      float holeRadius;
      vector<Vector2f> holePositions;

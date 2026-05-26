@@ -4,6 +4,13 @@
 #include <iostream>
 #include <cmath>
 
+/*
+Istaka Çizimi ve Mekaniği
+Vuruş Yönü
+Vuruş Gücü Hesabı
+Güç Aktarımı(beyaz topa)
+*/
+
 using namespace sf;
 
 class Cue
@@ -13,14 +20,14 @@ class Cue
     Texture texture;
     Sprite sprite;
     
-    float power = 0.f;        
-    float maxPower = 450.f;   
-    bool isAiming = false;
-    float impactForce=0.f;
+    float power ;        
+    float maxPower ;   
+    bool isAiming ;
+    float impactForce ;
     
 
     //Fonksiyonlar
-    void initCue();
+    
     void initTextures();
     void initSprite();
     void initVariable();
@@ -32,18 +39,17 @@ class Cue
     Cue();
     ~Cue();
 
-    //Fonksiyonlar
-    void startAiming(); 
-    void stopAiming(); 
-    void resetPower(); 
-
+    //Accessors (erişim)
     const float getPower() const ;
     const bool getAiming() const ;
     float getRotation() const ;
     const float getimpectPower() const;
-     void updatePositionForward();
-     
 
+    //Fonksiyonlar
+    void startAiming(); 
+    void stopAiming(); 
+    void resetPower(); 
+    void updatePositionForward();
     void update(Vector2f whiteBallPos, Vector2f mousePos);
     void render(RenderWindow &target);
 };

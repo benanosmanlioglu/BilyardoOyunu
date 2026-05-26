@@ -2,10 +2,9 @@
 #include <SFML/Graphics.hpp>
 
 //Private Fonksiyonlar
-void Cue::initCue()
-{
 
-}
+
+
 void Cue::initVariable()
 { 
      power = 0.f;        
@@ -101,20 +100,7 @@ Cue::~Cue()
 
 }
 
-//Fonksiyonlar
-void Cue::startAiming() 
-{ 
-   this->isAiming = true; 
-}
-void Cue::stopAiming() 
-{ 
-   this->isAiming = false; 
-}
- void Cue::resetPower() 
-{ 
-  this->power = 0;
-}
-
+//Accessors (erişim)
 const float Cue::getPower() const 
 { 
    return this->power; 
@@ -130,6 +116,20 @@ const bool Cue::getAiming() const
 float Cue::getRotation() const 
 { 
    return this->sprite.getRotation(); 
+}
+
+//Fonksiyonlar
+void Cue::startAiming() 
+{ 
+   this->isAiming = true; 
+}
+void Cue::stopAiming() 
+{ 
+   this->isAiming = false; 
+}
+void Cue::resetPower() 
+{ 
+  this->power = 0;
 }
 
 void Cue::update(Vector2f whiteBallPos, Vector2f mousePos)

@@ -107,17 +107,6 @@ void Balls::initvariable()
    
 }
 
-void Balls::setVelocity(Vector2f newVelocity)
-{
-   this->velocity = newVelocity;
-   
-}
-
-void Balls::setPosition(Vector2f newPosition)
-{
-    this->shape.setPosition(newPosition);
-}
-
 //Yapıcı && Yıkıcı
 Balls::Balls(float x, float y,  int ballnumber)
 {
@@ -132,10 +121,36 @@ Balls::~Balls()
 
 }
 
+//Accessors (erişim)
+const CircleShape & Balls::getShape() const
+{ 
+  return this->shape; 
+}
+const Vector2f Balls::getVelocity() const 
+{
+    return this->velocity; 
+}
+int Balls::getBallNumber() const 
+{ 
+    return this->ballnumber; 
+}
+bool Balls::getIsPotted() const 
+{
+    return this->isPotted;
+}
 
-//Fonksiyonlar
+//Setters
+void Balls::setVelocity(Vector2f newVelocity)
+{
+   this->velocity = newVelocity;
+   
+}
+void Balls::setPosition(Vector2f newPosition)
+{
+    this->shape.setPosition(newPosition);
+}
 
-  
+//Fonksiyonlar 
   void Balls::updateMovement()
    {  //Top Hzlandırma && Yavaşlatma
        this->shape.move(this->velocity);
@@ -188,17 +203,6 @@ Balls::~Balls()
     }
   }
    
-  
-  const CircleShape & Balls::getShape() const
-   { 
-    return this->shape; 
-   }
-   const Vector2f Balls::getVelocity() const 
-   {
-     return this->velocity; 
-   }
-  
-
  void Balls::updateBalls(const vector<Vector2f>& holePositions, float holeRadius)
  {
     this->updateMovement();    
@@ -214,7 +218,6 @@ Balls::~Balls()
 
  }
 
- //****************************************************************************************** 
 
  bool Balls::isNearHole(const vector<Vector2f>& holePositions, float holeRadius)
  {  
@@ -246,9 +249,6 @@ Balls::~Balls()
 
     return false;
 }
-bool Balls::getIsPotted() const 
-{
-    return this->isPotted;
-}
+
 
 
