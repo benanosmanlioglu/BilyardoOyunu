@@ -6,6 +6,15 @@ void Cue::initCue()
 {
 
 }
+void Cue::initVariable()
+{ 
+     power = 0.f;        
+     maxPower = 450.f;   
+     isAiming = false;
+     impactForce=0.f;
+    
+
+}
  void Cue::initTextures()
  {
     if (!this->texture.loadFromFile("cue.png")) 
@@ -81,7 +90,9 @@ void Cue::initCue()
 
 //Yapıcı && Yıkıcı
 Cue::Cue()
-{   this->initTextures();
+{  
+    this->initVariable();
+    this->initTextures();
     this->initSprite();
     
 }

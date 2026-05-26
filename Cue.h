@@ -23,6 +23,7 @@ class Cue
     void initCue();
     void initTextures();
     void initSprite();
+    void initVariable();
     void updatePosition(Vector2f whiteBallPos);
     void updateRotation(Vector2f whiteBallPos,Vector2f  mousePos);
    

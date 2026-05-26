@@ -26,6 +26,10 @@ class Game
      RectangleShape restartButton;
      Text buttonText;
      Text winText;
+     int pottedBallCount;
+     Text pottedText;
+     RectangleShape powerBarOutline;
+     RectangleShape powerBarInner;
     
     //Window
     RenderWindow *Window;
@@ -56,6 +60,7 @@ class Game
     void initFont();
     void initText();
     bool isWin();
+    void updatePowerBar();
     // Boşluk Fonksiyonları
     void initHoles();
     void updateHoles();

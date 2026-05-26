@@ -9,6 +9,7 @@ void Game::initVariables()
     this->score = 0;
     this->endgame = false;
     this->wongame = false;
+    this->pottedBallCount = 0;
     
 
 }
@@ -189,6 +190,23 @@ void Game::initText()
         this->videoMode.width / 2.f - 250.f, 
         this->videoMode.height / 2.f - 50.f
     );
+
+    //Boşluğa Giren Top sayısı
+    this->pottedText.setFont(this->font);
+    this->pottedText.setCharacterSize(24);
+    this->pottedText.setFillColor(sf::Color::Cyan);
+    this->pottedText.setPosition(20.f, 60.f);
+    this->pottedText.setString("Pot Edilen: 0");
+
+    //Güç Barı
+    this->powerBarOutline.setSize(sf::Vector2f(30.f, 200.f));
+    this->powerBarOutline.setFillColor(sf::Color::Transparent);
+    this->powerBarOutline.setOutlineThickness(2.f);
+    this->powerBarOutline.setOutlineColor(sf::Color::White);
+    this->powerBarOutline.setPosition(50.f, 350.f);
+
+    this->powerBarInner.setFillColor(sf::Color::Yellow);
+    this->powerBarInner.setPosition(50.f, 550.f);
 }
 bool Game::allBallsStopped()
 {
@@ -315,6 +333,7 @@ void Game::updateHoles()
                 } 
                 else 
                 {   
+                    this->pottedBallCount++; 
                     this->score += 10;
                     this->removeBall(i);    
 
@@ -339,7 +358,27 @@ void Game::updateHoles()
 
     }
 }
+void Game::updatePowerBar()
+{  
+     if (this->allBallsStopped() && this->isWin())
+    {
+        float currentPower = this->cue->getimpectPower();
+        float maxPower = 450.f;
 
+        float powerHeight = (currentPower / maxPower) * 200.f;
+        this->powerBarInner.setSize(sf::Vector2f(30.f, -powerHeight));
+        this->powerBarInner.setPosition(50.f, 550.f);
+
+        if (currentPower > maxPower * 0.70f)
+            this->powerBarInner.setFillColor(sf::Color::Red);
+        else if (currentPower > maxPower * 0.40f)
+             this->powerBarInner.setFillColor(sf::Color(255, 165, 0));
+        else  
+             this->powerBarInner.setFillColor(sf::Color::Yellow);      
+    }
+    
+
+}
 void Game::updateBalls()
 {  
     
@@ -394,9 +433,11 @@ void Game::update()
  
      this->updateBalls();
      this->scoreText.setString("Score: " + to_string(this->score));
+     this->pottedText.setString("Pot Edilen: " + std::to_string(this->pottedBallCount));
     // ıstaka güncelleniyor
     if(allBallsStopped())
     {  this->updateCue();
+       this->updatePowerBar(); 
 
        if(this->cue->getPower() > 15.f && !(this->cue->getAiming()))
        {
@@ -410,7 +451,7 @@ void Game::update()
 
     
     }
-
+     
   }
   
 
@@ -433,13 +474,17 @@ void Game::render()
     if(allBallsStopped())
     {
      this->cue->render(*this->Window);
+     this->Window->draw(this->powerBarOutline);
+     this->Window->draw(this->powerBarInner);
     }
     //Skore
     this->Window->draw(this->scoreText);
+    this->Window->draw(this->pottedText);
     //Tekrar
     this->Window->draw(this->restartButton);
     this->Window->draw(this->buttonText);
     this->Window->draw(this->scoreText);
+    
     //Bitirme
     if (this->endgame)
     {  
